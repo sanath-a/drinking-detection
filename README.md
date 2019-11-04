@@ -1,1 +1,1 @@
-Project meant for the HABits lab @ Northwestern Universty. 
+Project meant for the HABits lab @ Northwestern University.

@@ -102,6 +102,17 @@ def SetBuilder(path = './data/'):
 
 
 def CleanUp(path = './data/', keep_sets = False):
+    '''
+    Cleans Image Dumps.
+
+    ---Params---
+    path: Path to images to be cleaned
+    keep_sets: If true, keep original and masked datasets as well as annotated.csv.
+    ------------
+    ---Returns---
+    Void. Deletes directories.
+    -----------
+    '''
     dirs = os.listdir(path)
     for d in dirs:
         if d in ['original', 'masked'] and keep_sets:
@@ -112,6 +123,18 @@ def CleanUp(path = './data/', keep_sets = False):
         os.remove('./annotated.csv')
 
 def extractImages(pathIn, pathOut):
+    '''
+    Helper Function to extract frames from a single video using OpenCV.
+
+    ---Params---
+    pathIn: Path to Video
+    pathOut: Path to repository to dump frames
+    ------------
+    ---Returns---
+    count: Number of frames extracted from a video
+    Deposits frames in pathOut
+    -------------
+    '''
     count = 0
     vidcap = cv2.VideoCapture(pathIn)
     frames_in_vid = vidcap.get(cv2.CAP_PROP_FRAME_COUNT)
