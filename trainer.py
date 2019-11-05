@@ -1,6 +1,8 @@
-def train_loop(model_init,learning_rate,num_epochs, print_every, use = None, is_training = False):
-    with tf.device(device):
-        model = model_init(use)
+import tensorflow as tf
+
+def train_loop(model_init,train_dset,val_dset, learning_rate,num_epochs, print_every, is_training = False):
+    with tf.device('/cpu:0'):
+        model = model_init()
         optimizer = tf.keras.optimizers.Adam(learning_rate = learning_rate)
 
         loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -65,4 +67,4 @@ def train_loop(model_init,learning_rate,num_epochs, print_every, use = None, is_
         hist['train acc'] = training_acc
         hist['val acc'] = val_acc
 
-        return model, hist
+        return hist
