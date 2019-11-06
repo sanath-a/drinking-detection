@@ -149,11 +149,11 @@ def extractImages(pathIn, pathOut):
 if __name__ == "__main__":
     videos = [f for f in os.listdir('./data/videos/') if os.path.splitext(f)[1] == '.mp4']
     print ("Cleaning Old Files...")
-    #CleanUp()
+    CleanUp()
     print ("Extracting Frames...")
-    #Extractor(videos)
+    Extractor(videos)
     print ("Building Datasets...")
-    #SetBuilder()
+    SetBuilder()
     print ("Cleaning data dumps...")
-    #CleanUp(keep_sets = True)
+    CleanUp(keep_sets = True)
     print ("Frame Extraction: Success")
