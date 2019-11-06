@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import os
 import csv
+from skimage.feature import hog
+from skimage.exposure import histogram
 def import_data(path = './data/original/'):
     '''
     Loads data into X_train, X_test, X_val and y_train, y_test, y_val.
@@ -68,6 +70,36 @@ def import_data(path = './data/original/'):
 
     return X_train, y_train, X_test, y_test, X_val, y_val
 
+def Feature_Extraction(X):
+    hist_X = im_hist(X)
+    hog_X = im_hog(X)
+
+    features = np.concatenate((hist_X, hog_X), axis = 1)
+    return features
+
+def im_hist(X):
+    N = X.shape[0]
+    hist_array = np.zeros((N,256 * 3))
+    for i in range(N):
+        h_list = []
+        for j in range(3):
+            v = X[i,:,:,j]
+            hist, bin_centers = histogram(v)
+            h_list.append(hist)
+        vector = np.array(h_list).ravel()
+        hist_array[i] = vector
+    return hist_array
+
+def im_hog (X):
+    N = X.shape[0]
+    feature_array = np.zeros((N,271674))
+    for i in range(N):
+        im = X[i]
+        hog_vec = hog(im, multichannel = True)
+        feature_array[i] = hog_vec
+    return feature_array
+
+
 class Dataset(object):
     def __init__(self, X, y, batch_size, shuffle=False):
         """
@@ -92,4 +124,6 @@ class Dataset(object):
 if __name__ == '__main__':
     print ('Loading all datasets..')
     X_train, y_train, X_test, y_test, X_val, y_val = import_data()
+    X_train_feat = Feature_Extraction(X_train)
+    print (X_train_feat.shape)
     print (X_train.shape, X_test.shape, X_val.shape)
