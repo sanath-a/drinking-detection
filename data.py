@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import cv2
 import os
 import csv
@@ -25,12 +26,12 @@ def import_data(train_set = 'original'):
     y_val (nd.array): Validation targets of shape (Z,)
     -------------
     '''
-    
-    if train_set == 'original': 
+
+    if train_set == 'original':
         path = './data/original/'
-    elif train_set == 'masked': 
+    elif train_set == 'masked':
         path = './data/masked/'
-    else: 
+    else:
         raise ValueError('train_set must be either original or masked')
 
     sets = ['train', 'test', 'val']
@@ -44,7 +45,7 @@ def import_data(train_set = 'original'):
                 target_dict[row['name']] = 1
             else:
                 target_dict[row['name']] = 0
-    
+
     for s in sets:
         s_path = path + s + '/'
         test_img_names = [f for f in os.listdir(s_path)]
@@ -77,6 +78,23 @@ def import_data(train_set = 'original'):
     X_val = (X_val - mean_pixel) / std_pixel
 
     return X_train, y_train, X_test, y_test, X_val, y_val
+def write_output(train_set = 'original', preds):
+    if train_set == 'original':
+        path = './data/original/train/'
+        file_name = 'output_original.csv'
+    elif train_set == 'masked':
+        path = './data/masked/train'
+        file_name = 'output_masked.csv'
+    else:
+        raise ValueError('train_set must be either original or masked')
+
+    img_names = [f for f in os.listdir(path)]
+    output_df = pd.DataFrame(columns = ['Name', 'Drinking'])
+    output_df['Name'] = img_names
+    output_df['Drinking'] = preds
+
+    output_df.to_csv(filename, sep = ',', header = False, index = False)
+
 
 def Feature_Extraction(X):
     hist_X = im_hist(X)
