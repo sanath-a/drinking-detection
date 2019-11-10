@@ -4,7 +4,7 @@ import os
 import csv
 from skimage.feature import hog
 from skimage.exposure import histogram
-def import_data(path = './data/original/'):
+def import_data(train_set = 'original'):
     '''
     Loads data into X_train, X_test, X_val and y_train, y_test, y_val.
     All feature vectors are normalized by subtracting the mean pixel and dividing
@@ -25,6 +25,14 @@ def import_data(path = './data/original/'):
     y_val (nd.array): Validation targets of shape (Z,)
     -------------
     '''
+    
+    if train_set == 'original': 
+        path = './data/original/'
+    elif train_set == 'masked': 
+        path = './data/masked/'
+    else: 
+        raise ValueError('train_set must be either original or masked')
+
     sets = ['train', 'test', 'val']
     X = []
     y = []
@@ -36,7 +44,7 @@ def import_data(path = './data/original/'):
                 target_dict[row['name']] = 1
             else:
                 target_dict[row['name']] = 0
-
+    
     for s in sets:
         s_path = path + s + '/'
         test_img_names = [f for f in os.listdir(s_path)]
