@@ -1,11 +1,21 @@
 import tensorflow as tf
 
-### A Conv Net Using Two Convolutional Layers and One Dense)
+
 class ThreeLayerConvNet(tf.keras.Model):
-    def __init__(self, num_classes):
+    '''
+    A basic three layer Convolutional Neural Network built off the Keras API.  
+    
+    '''
+    def __init__(self, num_classes = 2):
         super(ThreeLayerConvNet, self).__init__()
+        '''
+        Params
+        -------
+        num-classes: Number of target classes in dataset. Default is 2. 
+        -------
+        '''
         channel_1, channel_2 = 64, 64
-        initializer = tf.initializers.glorot_normal()
+        initializer = tf.keras.initializers.VarianceScaling(scale=2.0)
         self.conv1 = tf.keras.layers.Conv2D(channel_1,5, strides = 1,
                                             padding = "same",
                                             activation = "relu", kernel_initializer = initializer)

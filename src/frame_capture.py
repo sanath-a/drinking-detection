@@ -147,7 +147,8 @@ def extractImages(pathIn, pathOut):
     return count
 
 if __name__ == "__main__":
-    videos = [f for f in os.listdir('./data/videos/') if os.path.splitext(f)[1] == '.mp4']
+    path = './data/videos/'
+    videos = [f for f in os.listdir(path) if os.path.splitext(f)[1] == '.mp4']
     print ("Cleaning Old Files...")
     CleanUp()
     print ("Extracting Frames...")

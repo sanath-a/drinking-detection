@@ -10,10 +10,7 @@ class Import_Data:
     '''
     This class imports data from the built out sets
     '''
-    self.path = None
-    self.train = []
-    self.test = []
-    self.val = []
+ 
     def __init__(self, train_set = 'original'):
         if train_set == 'original':
             self.path = './data/original/'
@@ -21,6 +18,10 @@ class Import_Data:
             self.path = './data/masked/'
         else:
             raise ValueError('train_set must be either original or masked')
+   
+        self.train = []
+        self.test = []
+        self.val = []
 
     def get_data(self):
         '''
@@ -65,7 +66,7 @@ class Import_Data:
             else:
                 self.test.append(img_names)
             img_paths = [s_path + f for f in img_names if os.path.splitext(s_path + f)[1] == '.jpg']
-            N = len(_img_paths)
+            N = len(img_paths)
             arr = np.zeros((N,360,640,3))
             targets = np.zeros((N,))
             for i in range(N):
@@ -109,28 +110,6 @@ class Import_Data:
         else:
             raise ValueError('Sets are train, test, or val')
 
-
-class Dataset(object):
-    def __init__(self, X, y, batch_size, shuffle=False):
-        """
-        Construct a Dataset object to iterate over data X and labels y
-
-        Inputs:
-        - X: Numpy array of data, of any shape
-        - y: Numpy array of labels, of any shape but with y.shape[0] == X.shape[0]
-        - batch_size: Integer giving number of elements per minibatch
-        - shuffle: (optional) Boolean, whether to shuffle the data on each epoch
-        """
-        assert X.shape[0] == y.shape[0], 'Got different numbers of data and labels'
-        self.X, self.y = X, y
-        self.batch_size, self.shuffle = batch_size, shuffle
-
-    def __iter__(self):
-        N, B = self.X.shape[0], self.batch_size
-        idxs = np.arange(N)
-        if self.shuffle:
-            np.random.shuffle(idxs)
-        return iter((self.X[i:i+B], self.y[i:i+B]) for i in range(0, N, B))
 if __name__ == '__main__':
     print ('Loading all datasets..')
     X_train, y_train, X_test, y_test, X_val, y_val = import_data()
