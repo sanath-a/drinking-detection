@@ -18,6 +18,7 @@ To build new train/test/val datasets, call `src/frame_capture.py` from the comma
 **Model Training**
 Model training for original and masked videos is walked through in `Original_Model.ipynb` and `Masked_Model.ipynb` respectively. You will need Jupyter Notebook to take a look.
 
+Outputs can be found in `output_original.csv` and `output_masked.csv`.
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
