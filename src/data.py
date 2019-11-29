@@ -3,14 +3,13 @@ import pandas as pd
 import cv2
 import os
 import csv
-from skimage.feature import hog
-from skimage.exposure import histogram
+import sys
 
 class Import_Data:
     '''
     This class imports data from the built out sets
     '''
- 
+
     def __init__(self, train_set = 'original'):
         if train_set == 'original':
             self.path = './data/original/'
@@ -18,7 +17,7 @@ class Import_Data:
             self.path = './data/masked/'
         else:
             raise ValueError('train_set must be either original or masked')
-   
+
         self.train = []
         self.test = []
         self.val = []
@@ -109,10 +108,33 @@ class Import_Data:
             return self.val[0]
         else:
             raise ValueError('Sets are train, test, or val')
+    def write_output(self, path, names, y_pred):
+        '''
+        Writes output to specified output csv.
+
+        ---Params---
+        path: Path to output CSV.
+        names: List or nd.array of size (N,) containing names of images.
+        y_pred: List or nd.array of size (N,) containing model predictions.
+        ------------
+        ---Output---
+        Writes CSV to given path. In format of:
+        Img_Name, is_drinking.
+
+        is_drining is "yes" or "no"
+        --------------
+        '''
+        N = y_pred.shape[0]
+        pred_word = []
+        for i in range(N):
+            if y_pred[i] == 1:
+                pred_word.append('yes')
+            else:
+                pred_word.append('no')
+        output_df = pd.DataFrame(columns = ['Name','Drinking'])
+        output_df['Name'] = names
+        output_df['Drinking'] = y_pred
+        output_df.to_csv(path, sep = ',', header = False, index = False)
+        print ('Output written to %s' % path)
 
 if __name__ == '__main__':
-    print ('Loading all datasets..')
-    X_train, y_train, X_test, y_test, X_val, y_val = import_data()
-    X_train_feat = Feature_Extraction(X_train)
-    print (X_train_feat.shape)
-    print (X_train.shape, X_test.shape, X_val.shape)

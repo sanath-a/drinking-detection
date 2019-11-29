@@ -4,15 +4,15 @@ import os, shutil
 import cv2
 import math
 import re
+import sys
 
-
-def Extractor(file_names, verbose = True):
+def Extractor(file_paths, out_path = './data/',  verbose = True):
     '''
     Extracts frames from videos and separates into training, testing, and validation
     sets with a 50/30/20 split.
 
     ---Params---
-    file_names: Names of video files for extraction
+    file_names: List Names of video files for extraction
     verbose: Print statements on/off
     ------------
     ---Returns---
@@ -20,24 +20,25 @@ def Extractor(file_names, verbose = True):
     --------------
     '''
     names = []
-    for f in file_names:
-        name, _ = os.path.splitext(f)
+    for f in file_paths:
+        bname = os.path.basename(f)
+        name, ext  = os.path.splitext(bname)
         names.append(name)
 
-    paths = ['./data/videos/' + f for f in file_names]
-
     for n in names:
-        if not os.path.isdir('./data' + n + '/'):
-            os.mkdir('./data/' + n + '/')
+        if not os.path.isdir(out_path + n + '/'):
+            os.mkdir(out_path + n + '/')
 
     total = 0
-    for (p, n) in zip(paths, names):
-        num_done = extractImages(p, './data/' + n + '/')
+    for (p, n) in zip(file_paths, names):
+        num_done = extractImages(p, out_path + n + '/')
         total += num_done
         if verbose: print (n + ": %d Frames Extracted" % num_done)
     if verbose: print ("%d Total Frames Collected" % total)
 
-def SetBuilder(path = './data/'):
+    setBuilder(out_path)
+
+def setBuilder(path = './data/'):
     '''
     Builds training, validation and test sets from image dump. Assumes Extractor
     has been run. Builds masked and original data sets.
@@ -69,7 +70,7 @@ def SetBuilder(path = './data/'):
     names = [f.replace('/', '_') for f in names]
 
     annotated_df['File'] = names
-    annotated_df.to_csv('annotated.csv', sep = ',', header = False, index = False)
+    annotated_df.to_csv(path + 'annotated.csv', sep = ',', header = False, index = False)
     for f in (og_vids, masked_vids):
         shuffled_files = np.random.permutation(f)
 
@@ -100,14 +101,13 @@ def SetBuilder(path = './data/'):
                 os.chmod(d + basename, 0o0777)
 
 
-
-def CleanUp(path = './data/', keep_sets = False):
+def Cleanup(path = './data/', keep_annotated = True):
     '''
-    Cleans Image Dumps.
+    Deletes training/validation/tests set.
 
     ---Params---
     path: Path to images to be cleaned
-    keep_sets: If true, keep original and masked datasets as well as annotated.csv.
+    keep_annotated: If true, keeps annotated.csv.
     ------------
     ---Returns---
     Void. Deletes directories.
@@ -115,12 +115,12 @@ def CleanUp(path = './data/', keep_sets = False):
     '''
     dirs = os.listdir(path)
     for d in dirs:
-        if d in ['original', 'masked'] and keep_sets:
+
+        if d in ['original', 'masked', 'videos']:
             continue
-        if 'videos' not in d and os.path.isdir(path + d):
+        if os.path.isdir(path + d):
             shutil.rmtree(path + d)
-    if not keep_sets:
-        os.remove('./annotated.csv')
+    if not keep_annotated: os.remove(path + 'annotated.csv')
 
 def extractImages(pathIn, pathOut):
     '''
@@ -147,14 +147,13 @@ def extractImages(pathIn, pathOut):
     return count
 
 if __name__ == "__main__":
-    path = './data/videos/'
-    videos = [f for f in os.listdir(path) if os.path.splitext(f)[1] == '.mp4']
-    print ("Cleaning Old Files...")
-    CleanUp()
-    print ("Extracting Frames...")
+
+    path = sys.argv[1]
+    if len(sys.argv) == 4:
+        if sys.argv[3] == '--remove_old':
+            Cleanup(path, keep_annotated = True)
+        else:
+            raise ValueError("Invalid Option")
+    videos = [path + f for f in os.listdir(path) if os.path.splitext(f)[1] == '.mp4']
     Extractor(videos)
-    print ("Building Datasets...")
-    SetBuilder()
-    print ("Cleaning data dumps...")
-    CleanUp(keep_sets = True)
-    print ("Frame Extraction: Success")
+    Cleanup(path, keep_annotated = True)
