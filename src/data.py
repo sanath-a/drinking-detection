@@ -108,7 +108,7 @@ class Import_Data:
             return self.val[0]
         else:
             raise ValueError('Sets are train, test, or val')
-    def write_output(self, path, names, y_pred):
+    def write_output(self,path,desired_set = 'train',y_pred):
         '''
         Writes output to specified output csv.
 
@@ -132,7 +132,7 @@ class Import_Data:
             else:
                 pred_word.append('no')
         output_df = pd.DataFrame(columns = ['Name','Drinking'])
-        output_df['Name'] = names
+        output_df['Name'] = self.get_labels(desired_set)
         output_df['Drinking'] = y_pred
         output_df.to_csv(path, sep = ',', header = False, index = False)
         print ('Output written to %s' % path)
