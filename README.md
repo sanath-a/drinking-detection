@@ -38,7 +38,7 @@ For more detail, check out the [Keras Documentation](https://keras.io/models/mod
 
 `Cleanup(path = './data/', keep_annotated = True)` deletes training/validation/test sets. `Path` is the path to the sets (should be the same as the `out_path` argument from the `Extractor` function). `keep_annotated` specifies whether or not to keep `annotated.csv`.
 
-From the command line, calling `src/frame_capture.py input_path out_path` will extract frames and build the datasets, where `input_path` is the path to the raw videos and `out_path` denotes where to store the datasets.
+From the command line, calling `src/frame_capture.py input_path out_path` will extract frames and build the datasets, where `input_path` is the path to the raw videos and `out_path` denotes where to store the datasets. Add the flaf `--remove-old` to remove old datasets before building the new ones. 
 
 These functions assume the raw videos are organized in the same structure as in the original google drive.
 

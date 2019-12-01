@@ -150,7 +150,7 @@ if __name__ == "__main__":
 
     path = sys.argv[1]
     if len(sys.argv) == 4:
-        if sys.argv[3] == '--remove_old':
+        if sys.argv[3] == '--remove-old':
             Cleanup(path, keep_annotated = True)
         else:
             raise ValueError("Invalid Option")
